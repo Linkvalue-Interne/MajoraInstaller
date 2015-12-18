@@ -18,8 +18,8 @@
   apt: name={{item}} state=installed
   with_items: php5_extensions
 
-- name: Configure php5 cli
-  template: src=php.ini.j2 dest="/etc/php5/cli/php.ini" owner=root group=root mode=0644
+- name: Configure php5 cli for phar
+  template: src=php-cli.ini.j2 dest="/etc/php5/cli/php.ini" owner=root group=root mode=0644
 
 - name: Configure php5 fpm
   template: src=php.ini.j2 dest="/etc/php5/fpm/php.ini" owner=root group=root mode=0644
