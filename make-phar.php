@@ -13,8 +13,5 @@ $params = FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::KEY_AS_F
 
 $phar = new Phar($buildRoot . '/ready-to-code.phar', $params, 'ready-to-code.phar');
 
-$phar['index.php'] = file_get_contents($srcRoot . '/index.php');
-$phar['common.php'] = file_get_contents($srcRoot . '/common.php');
+$phar->buildFromDirectory($srcRoot);
 $phar->setStub($phar->createDefaultStub('index.php'));
-
-copy($srcRoot . '/config.ini', $buildRoot . '/config.ini');
