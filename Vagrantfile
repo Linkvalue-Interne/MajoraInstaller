@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require 'yaml'
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    config.vm.define :local, primary: true do |local|
+
+        local.vm.box = "ubuntu/trusty64"
+
+        local.vm.provider "virtualbox" do |vb|
+            vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+            vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+            vb.customize ["modifyvm", :id, "--memory", 2048, "--cpus", "2"]
+            vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+        end
+
+        local.vm.network "private_network", ip: "192.168.100.90"
+
+        # If true, then any SSH connections made will enable agent forwarding.
+        # Default value: false
+        # config.ssh.forward_agent = true
+        local.vm.network :forwarded_port, guest: 22, host: 3333, id: "ssh", disabled: true
+        local.vm.network :forwarded_port, guest: 22, host: 3340, auto_correct: true
+
+        config.vm.network "forwarded_port", guest: 5601, host: 5601
+        config.vm.network "forwarded_port", guest: 9200, host: 9200
+
+        local.vm.synced_folder ".", "/var/www/SF2-ReadyToCode/", id:"vagrant-root", type: "nfs", mount_options: ["nolock,vers=3,udp,noatime,actimeo=1"]
+    end
+
+    config.vm.provision :ansible do |ansible|
+        ansible.playbook = "ansible/app.yml"
+        ansible.limit = "all"
+    end
+
+end

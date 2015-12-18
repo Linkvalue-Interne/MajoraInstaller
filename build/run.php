@@ -1,2 +1,2 @@
 <?php
-require 'build/ready-to-code.phar';
+require 'ready-to-code.phar';

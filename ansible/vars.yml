@@ -1,0 +1,3 @@
+workspace: /var/www/elasticsearch
+
+php_version: "5.5"
