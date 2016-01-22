@@ -1,6 +1,5 @@
 /.idea
 /build
 /.vagrant
-
-# Managed by Composer
 /vendor/
+composer.phar
