@@ -1,3 +1,6 @@
 /.idea
 /build
 /.vagrant
+
+# Managed by Composer
+/vendor/
