@@ -5,6 +5,7 @@ require_once 'Config.php';
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Filesystem\Filesystem;
+use Distill\Distill;
 
 /**
  * Class Downloader
@@ -20,12 +21,18 @@ class Downloader
     private $config;
 
     /**
+     * @var string
+     */
+    private $downloadZip;
+
+    /**
      * Downloader constructor.
      */
     public function __construct()
     {
         $this->fs = new Filesystem();
         $this->config = new Config();
+        $this->downloadZip = 'project.zip';
     }
 
     /**
@@ -36,6 +43,7 @@ class Downloader
     {
         $client = new Client();
         echo '... downloading Majora' . "\n";
+        $archive = $dir.DIRECTORY_SEPARATOR.$this->downloadZip;
 
         try{
             $request = $client->request('GET', $this->config->majora_path);
@@ -43,6 +51,10 @@ class Downloader
             echo '... Majora succesfully downloaded' . "\n";
             $this->fs->dumpFile($dir . '/' . $this->config->local_zip_name, $response);
             echo '... Majora succesfully copied' . "\n";
+
+            $this->fs->dumpFile($archive,$response);
+            $distill = new Distill();
+            $extractionSucceeded = $distill->extractWithoutRootDirectory($archive, $dir);
         }
         catch (ClientException $e) {
             throw new \RuntimeException(sprintf(
