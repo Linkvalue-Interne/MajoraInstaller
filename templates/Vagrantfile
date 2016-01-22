@@ -22,16 +22,26 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
 
         # Network
-        local.vm.hostname = "arfouille"
+        local.vm.hostname = "hellouille"
         local.vm.network "private_network", ip: "127.0.0.1"
 
         # Share folders
-        local.vm.synced_folder ".", ".", id:"arfouille", type: "nfs", mount_options: ["nolock,vers=3,udp,noatime,actimeo=1"]
+        local.vm.synced_folder ".", "test", id:"hellouille", type: "nfs", mount_options: ["nolock,vers=3,udp,noatime,actimeo=1"]
 
         # Ansible provisionning
         local.vm.provision :ansible do |ansible|
             ansible.playbook = "ansible/app.yml"
             ansible.limit = "all"
+            ansible.extra_vars = {
+                sites: [
+                    {
+                        name: 'hellouille',
+                        docroot: 'test',
+                        server_name: 'hellouille.dev',
+                        template: 'vhost.symfony2.j2'
+                    }
+                ]
+            }
         end
 
     end

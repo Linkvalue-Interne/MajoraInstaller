@@ -1,0 +1,8 @@
+# all paths are relative to the ./build directory
+
+template_base_dir: ../templates
+vagrant_template_file: Vagrantfile.twig
+vagrant_file_path: ../templates/Vagrantfile
+
+majora_path: https://github.com/LinkValue/majora-standard-edition/archive/master.zip
+local_zip_name: majora.zip
