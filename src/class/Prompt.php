@@ -16,7 +16,6 @@ class Prompt
 
     public function run()
     {
-
         umask(0222);
 
         if(!$prompt = $this->prompt()) {
