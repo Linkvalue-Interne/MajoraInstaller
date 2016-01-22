@@ -3,6 +3,7 @@
         "twig/twig": "~1.0",
         "symfony/process": "~3.0",
         "guzzlehttp/guzzle": "^6.1",
-        "symfony/filesystem": "^3.0"
+        "symfony/filesystem": "^3.0",
+        "raulfraile/distill": "^0.9.10"
     }
 }
