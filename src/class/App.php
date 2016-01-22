@@ -1,11 +1,13 @@
 <?php
 require 'Prompt.php';
+require 'VagrantFileGenerator.php';
 
 class App
 {
     public function run()
     {
         $prompt = new Prompt();
+        $vagrantGenerator = new VagrantFileGenerator();
 
         if(!$prompt->run()) {
             echo Prompt::ERROR_PROMPT . "\n";
@@ -16,7 +18,15 @@ class App
             echo '... root dir just created' . "\n";
         } else {
             echo '... root dir already exists or insufficient permissions' . "\n";
+            // return;
         }
+
+        $twigEnvironment = $vagrantGenerator->loadEnvironment();
+        $vagrantGenerator->loadAndWriteTemplate($twigEnvironment, [
+            'ip' => $prompt->getIpVagrant(),
+            'rootDir' => $prompt->getRootDir(),
+            'projectName' => $prompt->getProjectName(),
+        ]);
     }
 
     private function createDir($dir)

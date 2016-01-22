@@ -1,6 +1,7 @@
 <?php
 class Prompt
 {
+    const PROMPT_PROJECT_NAME = 'What is the global project name ?';
     const PROMPT_ROOT_DIR = 'What would be the root dir of the installation ?';
     const PROMPT_IP_VAGRANT = 'What would be the IP address of the VM ?';
     const PROMPT_HOW_MANY_SKELETONS = 'How many skeletons will be in use ?';
@@ -8,6 +9,7 @@ class Prompt
 
     const ERROR_PROMPT = '/!\ You made an error in providing the required information.';
 
+    private $projectName;
     private $rootDir = '.';
     private $ipVagrant;
     private $skeletons = [];
@@ -22,9 +24,11 @@ class Prompt
             return false;
         }
 
-        $infos = ['rootDir', 'ipVagrant', 'skeletons'];
-        foreach($infos as $name) {
-            $this->$name = $prompt[$name];
+        $infos = (new \ReflectionClass(self::class))
+            ->getProperties(ReflectionProperty::IS_PRIVATE)
+        ;
+        foreach($infos as $property) {
+            $this->{$property->getName()} = $prompt[$property->getName()];
         }
 
         return $this;
@@ -32,6 +36,10 @@ class Prompt
 
     private function prompt()
     {
+        if(!$name = trim(readline(self::PROMPT_PROJECT_NAME."\n"))) {
+            return false;
+        }
+
         if(!$dir = trim(readline(self::PROMPT_ROOT_DIR."\n"))) {
             return false;
         }
@@ -43,6 +51,7 @@ class Prompt
         if(filter_var($ip, FILTER_VALIDATE_IP) === false) {
             return false;
         }
+
         if(!$nbSkeletons = trim(readline(self::PROMPT_HOW_MANY_SKELETONS."\n"))) {
             return false;
         }
@@ -62,6 +71,7 @@ class Prompt
         }
 
         return [
+            'projectName' => $name,
             'rootDir' => $dir,
             'ipVagrant' => $ip,
             'skeletons' => $skeletons,
@@ -125,5 +135,22 @@ class Prompt
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getProjectName()
+    {
+        return $this->projectName;
+    }
 
+    /**
+     * @param $projectName
+     * @return $this
+     */
+    public function setProjectName($projectName)
+    {
+        $this->projectName = $projectName;
+
+        return $this;
+    }
 }
