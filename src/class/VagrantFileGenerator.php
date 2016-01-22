@@ -1,27 +1,29 @@
 <?php
 require_once '../vendor/twig/twig/lib/Twig/Autoloader.php';
+require_once 'Config.php';
 
 class VagrantFileGenerator
 {
-    const TEMPLATE_FILE = 'Vagrantfile.twig';
+    private $config;
 
     public function __construct()
     {
         Twig_Autoloader::register();
+        $this->config = new Config();
     }
 
     public function loadEnvironment()
     {
-        $loader = new Twig_Loader_Filesystem('../templates');
+        $loader = new Twig_Loader_Filesystem($this->config->template_base_dir);
         return new Twig_Environment($loader);
     }
 
     public function loadAndWriteTemplate($twig, $options)
     {
-        $template = $twig->loadTemplate(self::TEMPLATE_FILE);
+        $template = $twig->loadTemplate($this->config->vagrant_template_file);
         $content = $template->render($options);
 
-        if(file_put_contents('../templates/Vagrantfile', $content)) {
+        if(file_put_contents($this->config->vagrant_file_path, $content)) {
             return true;
         }
 
