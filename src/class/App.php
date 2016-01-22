@@ -1,6 +1,7 @@
 <?php
 require 'Prompt.php';
 require 'VagrantFileGenerator.php';
+require 'Downloader.php';
 
 class App
 {
@@ -27,11 +28,13 @@ class App
             'rootDir' => $prompt->getRootDir(),
             'projectName' => $prompt->getProjectName(),
         ]);
+        $downloader = new Downloader();
+        $downloader->initialize($prompt->getRootDir());
     }
 
     private function createDir($dir)
     {
         echo '... checking if root dir exists prior creation' . "\n";
-        return !is_dir($dir) && @mkdir($dir);
+        return !is_dir($dir) && @mkdir($dir, 0777);
     }
 }

@@ -1,6 +1,8 @@
 {
     "require": {
         "twig/twig": "~1.0",
-        "symfony/process": "~3.0"
+        "symfony/process": "~3.0",
+        "guzzlehttp/guzzle": "^6.1",
+        "symfony/filesystem": "^3.0"
     }
 }
