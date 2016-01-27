@@ -2,6 +2,7 @@
 
 template_base_dir: ../templates
 vagrant_template_file: Vagrantfile.twig
+vagrant_file_path: ../templates/Vagrantfile
 vagrant_file_name: Vagrantfile
 
 majora_path: https://github.com/LinkValue/majora-standard-edition/archive/v2.zip
