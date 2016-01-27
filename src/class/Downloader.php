@@ -47,8 +47,6 @@ class Downloader
             echo '... Majora succesfully downloaded' . "\n";
             $this->fs->dumpFile($dir . '/' . $this->config->local_zip_name, $response);
             echo '... Majora succesfully copied' . "\n";
-            $distill = new Distill();
-            $extractionSucceeded = $distill->extractWithoutRootDirectory($dir . '/' . $this->config->local_zip_name, $dir);
         }
         catch (ClientException $e) {
             throw new \RuntimeException(sprintf(
@@ -56,5 +54,8 @@ class Downloader
                 $e->getMessage()
             ), $e);
         }
+
+        $distill = new Distill();
+        $extractionSucceeded = $distill->extractWithoutRootDirectory($dir . '/' . $this->config->local_zip_name, $dir);
     }
 }
