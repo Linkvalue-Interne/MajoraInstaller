@@ -12,8 +12,13 @@ class App
 {
     public function run()
     {
-        // Intanciate Prompt class
-        $prompt = new Prompt();
+        // Retrieving debug mode if needed
+        $debugOpt = getopt(null, ['debug::']);
+        if (array_key_exists('debug', $debugOpt)) {
+            $debug = $debugOpt['debug'];
+        }
+        // Intanciate Prompt class with debug mode if needed
+        $prompt = new Prompt(isset($debug) ? $debug : null);
 
         // Prompt questions
         if(!$prompt->run()) {
