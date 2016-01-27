@@ -42,10 +42,10 @@ class Downloader
         echo '... downloading Majora' . "\n";
 
         try{
-            $request = $client->request('GET', $this->config->majora_path);
+            $request = $client->request('GET', $this->config->options['majora_path']);
             $response = $request->getBody();
             echo '... Majora succesfully downloaded' . "\n";
-            $this->fs->dumpFile($dir . '/' . $this->config->local_zip_name, $response);
+            $this->fs->dumpFile($dir . '/' . $this->config->options['local_zip_name'], $response);
             echo '... Majora succesfully copied' . "\n";
         }
         catch (ClientException $e) {
@@ -56,6 +56,6 @@ class Downloader
         }
 
         $distill = new Distill();
-        $extractionSucceeded = $distill->extractWithoutRootDirectory($dir . '/' . $this->config->local_zip_name, $dir);
+        $extractionSucceeded = $distill->extractWithoutRootDirectory($dir . '/' . $this->config->options['local_zip_name'], $dir);
     }
 }
