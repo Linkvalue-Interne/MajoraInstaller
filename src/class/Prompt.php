@@ -44,6 +44,14 @@ class Prompt
      */
     private function prompt()
     {
+        if($this->debug) {
+            return [
+                'projectName' => 'readyToCode',
+                'rootDir' => './test',
+                'ipVagrant' => '127.0.0.1',
+                'skeletons' => ['test'],
+            ];
+        }
         if(!$name = trim(readline(self::PROMPT_PROJECT_NAME."\n"))) {
             return false;
         }
