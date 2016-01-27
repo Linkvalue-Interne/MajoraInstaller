@@ -14,24 +14,34 @@ class Prompt
     private $ipVagrant;
     private $skeletons = [];
 
-    public function __construct() {}
+    private $debug;
 
+    public function __construct($debug = false) {
+        $this->debug = $debug;
+    }
+
+    /**
+     * @return $this|bool
+     */
     public function run()
     {
         if(!$prompt = $this->prompt()) {
             return false;
         }
 
-        $infos = (new \ReflectionClass(self::class))
-            ->getProperties(ReflectionProperty::IS_PRIVATE)
-        ;
+        $infos = (new \ReflectionClass(self::class))->getProperties();
         foreach($infos as $property) {
-            $this->{$property->getName()} = $prompt[$property->getName()];
+            if(array_key_exists($property->getName(), $prompt)) {
+                $this->{$property->getName()} = $prompt[$property->getName()];
+            }
         }
 
         return $this;
     }
 
+    /**
+     * @return array|bool
+     */
     private function prompt()
     {
         if(!$name = trim(readline(self::PROMPT_PROJECT_NAME."\n"))) {
