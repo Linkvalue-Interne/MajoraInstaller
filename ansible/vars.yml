@@ -1,3 +1,3 @@
-workspace: /var/www/elasticsearch
+workspace: /var/www/SF2-ReadyToCode
 
 php_version: "5.5"
