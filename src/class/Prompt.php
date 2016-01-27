@@ -5,7 +5,7 @@ class Prompt
     const PROMPT_ROOT_DIR = 'What would be the root dir of the installation ?';
     const PROMPT_IP_VAGRANT = 'What would be the IP address of the VM ?';
     const PROMPT_HOW_MANY_SKELETONS = 'How many skeletons will be in use ?';
-    const PROMPT_SKELETONS = '- Input skeleton\'s name n°%s';
+    const PROMPT_SKELETONS = '- Input skeleton\'s name & URL n°%s (ex: name=>URL)';
 
     const ERROR_PROMPT = '/!\ You made an error in providing the required information.';
 
@@ -44,6 +44,14 @@ class Prompt
      */
     private function prompt()
     {
+        if($this->debug) {
+            return [
+                'projectName' => 'readyToCode',
+                'rootDir' => './test',
+                'ipVagrant' => '127.0.0.1',
+                'skeletons' => ['test'],
+            ];
+        }
         if(!$name = trim(readline(self::PROMPT_PROJECT_NAME."\n"))) {
             return false;
         }
@@ -72,7 +80,13 @@ class Prompt
         $skeletons = [];
         while(true) {
             ++$i;
-            $skeletons[] = trim(readline(sprintf(self::PROMPT_SKELETONS, $i)."\n"));
+
+            $skeleton = trim(readline(sprintf(self::PROMPT_SKELETONS, $i)."\n"));
+
+            $data = explode("=>", $skeleton);
+
+            $skeletons[$data[0]] = count($data) == 2 ? $data[1] : $data[0];
+
             if($i == $nbSkeletons) {
                 break;
             }

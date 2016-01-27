@@ -20,13 +20,19 @@ class VagrantFileGenerator
 
     public function loadAndWriteTemplate($twig, $options)
     {
-        $template = $twig->loadTemplate($this->config->options['vagrant_template_file']);
+        echo '... Customize VagrantFile' . "\n";
+        $template = $twig->loadTemplate($this->config->vagrant_template_file);
         $content = $template->render($options);
 
-        if(file_put_contents($this->config->options['vagrant_file_path'], $content)) {
-            return true;
+        $path = sprintf("%s/%s", $options["rootDir"], $this->config->vagrant_file_name);
+
+        @unlink($path);
+
+        if(!file_put_contents($path, $content)) {
+            echo "Erreur creation VagrantFile";
+            return false;
         }
 
-        return false;
+        return true;
     }
 }
