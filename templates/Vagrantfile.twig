@@ -40,7 +40,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                         server_name: '{{ projectName }}.dev',
                         template: 'vhost.symfony2.j2'
                     }
-                ]
+                ],
+                workspace: '{{ rootDir }}'
             }
         end
 
