@@ -7,8 +7,13 @@ class App
 {
     public function run()
     {
-        // Intanciate Prompt class
-        $prompt = new Prompt();
+        // Retrieving debug mode if needed
+        $debugOpt = getopt(null, ['no-interaction::']);
+        if (array_key_exists('no-interaction', $debugOpt)) {
+            $debug = $debugOpt['no-interaction'];
+        }
+        // Intanciate Prompt class with debug mode if needed
+        $prompt = new Prompt(isset($debug) ? $debug : null);
 
         // Prompt questions
         if(!$prompt->run()) {
