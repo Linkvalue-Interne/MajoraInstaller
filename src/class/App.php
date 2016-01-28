@@ -19,9 +19,9 @@ class App
     public function run()
     {
         // Retrieving debug mode if needed
-        $debugOpt = getopt(null, ['debug::']);
-        if (array_key_exists('debug', $debugOpt)) {
-            $debug = $debugOpt['debug'];
+        $debugOpt = getopt(null, ['no-interaction::']);
+        if (array_key_exists('no-interaction', $debugOpt)) {
+            $debug = $debugOpt['no-interaction'];
         }
         // Intanciate Prompt class with debug mode if needed
         $prompt = new Prompt(isset($debug) ? $debug : null);
