@@ -2,22 +2,45 @@
 require_once '../vendor/twig/twig/lib/Twig/Autoloader.php';
 require_once 'Config.php';
 
+/**
+ * Class VagrantFileGenerator
+ *
+ * Generates the Vagrantfile for the project
+ */
 class VagrantFileGenerator
 {
+    /**
+     * @var Config
+     */
     private $config;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         Twig_Autoloader::register();
         $this->config = new Config();
     }
 
+    /**
+     * Load Twig environment
+     *
+     * @return Twig_Environment
+     */
     public function loadEnvironment()
     {
         $loader = new Twig_Loader_Filesystem($this->config->options['template_base_dir']);
         return new Twig_Environment($loader);
     }
 
+    /**
+     * Load and write template into its final directory
+     *
+     * @param $twig
+     * @param $options
+     * @return bool
+     */
     public function loadAndWriteTemplate($twig, $options)
     {
         echo '... Customize VagrantFile' . "\n";

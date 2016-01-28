@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * Class Prompt
+ */
 class Prompt
 {
     const PROMPT_PROJECT_NAME = 'What is the global project name ?';
@@ -9,18 +13,43 @@ class Prompt
 
     const ERROR_PROMPT = '/!\ You made an error in providing the required information.';
 
+    /**
+     * @var string
+     */
     private $projectName;
+
+    /**
+     * @var string
+     */
     private $rootDir = '.';
+
+    /**
+     * @var string
+     */
     private $ipVagrant;
+
+    /**
+     * @var array
+     */
     private $skeletons = [];
 
+    /**
+     * @var bool
+     */
     private $debug;
 
+    /**
+     * Constructor
+     *
+     * @param bool|false $debug
+     */
     public function __construct($debug = false) {
         $this->debug = $debug;
     }
 
     /**
+     * Run the prompt command
+     *
      * @return $this|bool
      */
     public function run()
@@ -40,6 +69,8 @@ class Prompt
     }
 
     /**
+     * Prompts user for information
+     *
      * @return array|bool
      */
     private function prompt()

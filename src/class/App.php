@@ -8,8 +8,14 @@ require_once '../vendor/symfony/process/Process.php';
 
 use Symfony\Component\Process\Process;
 
+/**
+ * Class App
+ */
 class App
 {
+    /**
+     * Run the main application
+     */
     public function run()
     {
         // Retrieving debug mode if needed
@@ -71,13 +77,24 @@ class App
         ))->run();
     }
 
+    /**
+     * Create new directory if it doesn't exist
+     *
+     * @param $dir
+     * @return bool
+     */
     private function createDir($dir)
     {
         echo '... checking if root dir exists prior creation' . "\n";
         return !is_dir($dir) && @mkdir($dir, 0777);
     }
 
-    private function createTemplate($prompt)
+    /**
+     * Create the template for the Vagrantfile
+     *
+     * @param Prompt $prompt
+     */
+    private function createTemplate(Prompt $prompt)
     {
         $vagrantGenerator = new VagrantFileGenerator();
 

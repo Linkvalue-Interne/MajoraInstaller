@@ -6,16 +6,37 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class SkeletonInstall
+ */
 class SkeletonInstall
 {
+    /**
+     * @var array
+     */
     protected $skeletons;
 
+    /**
+     * @var string
+     */
     protected $path;
 
+    /**
+     * @var Client
+     */
     protected $client;
 
+    /**
+     * @var FileSystem
+     */
     protected $fs;
 
+    /**
+     * Constructor
+     *
+     * @param $skeletons
+     * @param $path
+     */
     public function __construct($skeletons, $path)
     {
         $this->skeletons = $skeletons;
@@ -24,6 +45,11 @@ class SkeletonInstall
         $this->fs = new Filesystem();
     }
 
+    /**
+     * Download all skeletons user has input
+     *
+     * @return $this
+     */
     public function run()
     {
         $this->createDirectory();
@@ -44,7 +70,11 @@ class SkeletonInstall
     }
 
     /**
-     * Add skeleton in new project since an URL
+     * Add skeleton in the project from an URL
+     *
+     * @param $skeletonName
+     * @param $skeletonUrl
+     * @return bool
      */
     protected function addSkeletonByUrl($skeletonName, $skeletonUrl)
     {
@@ -67,6 +97,9 @@ class SkeletonInstall
         return true;
     }
 
+    /**
+     * Use MajoraGenerator to add skeleton to project
+     */
     protected function addSkeletonByMajoraGenerator()
     {
         /**
@@ -74,6 +107,11 @@ class SkeletonInstall
          */
     }
 
+    /**
+     * Create new directory
+     *
+     * @return bool
+     */
     protected function createDirectory()
     {
         return mkdir($this->path);
