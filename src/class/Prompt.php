@@ -49,7 +49,7 @@ class Prompt
                 'projectName' => 'readyToCode',
                 'rootDir' => './test',
                 'ipVagrant' => '127.0.0.1',
-                'skeletons' => ['test'],
+                'skeletons' => ['basic' => 'https://github.com/stevedavid/basic-skeleton/archive/master.zip'],
             ];
         }
         if(!$name = trim(readline(self::PROMPT_PROJECT_NAME."\n"))) {

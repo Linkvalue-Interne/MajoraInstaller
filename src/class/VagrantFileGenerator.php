@@ -21,10 +21,10 @@ class VagrantFileGenerator
     public function loadAndWriteTemplate($twig, $options)
     {
         echo '... Customize VagrantFile' . "\n";
-        $template = $twig->loadTemplate($this->config->vagrant_template_file);
+        $template = $twig->loadTemplate($this->config->options['vagrant_template_file']);
         $content = $template->render($options);
 
-        $path = sprintf("%s/%s", $options["rootDir"], $this->config->vagrant_file_name);
+        $path = sprintf("%s/%s", $options["rootDir"], $this->config->options['vagrant_file_name']);
 
         @unlink($path);
 
