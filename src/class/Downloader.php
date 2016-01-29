@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Filesystem\Filesystem;
 use Distill\Distill;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
  * Class Downloader
@@ -53,6 +54,11 @@ class Downloader
                 "There was an error downloading :  %s",
                 $e->getMessage()
             ), $e);
+        }
+        catch (IOException $e) {
+            throw new \RuntimeException(
+                sprintf('Could not create target directory : %s', $e->getMessage())
+            );
         }
 
         $distill = new Distill();
