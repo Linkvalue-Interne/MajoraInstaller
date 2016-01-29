@@ -18,13 +18,10 @@ class App
      */
     public function run()
     {
-        // Retrieving debug mode if needed
-        $debugOpt = getopt(null, ['no-interaction::']);
-        if (array_key_exists('no-interaction', $debugOpt)) {
-            $debug = $debugOpt['no-interaction'];
-        }
-        // Intanciate Prompt class with debug mode if needed
-        $prompt = new Prompt(isset($debug) ? $debug : null);
+        // Instantiate Prompt class then set interaction mode depending on 'no-interaction' option
+        $prompt = (new Prompt())
+            ->setInteraction(!array_key_exists('no-interaction', getopt(null, ['no-interaction'])))
+        ;
 
         // Prompt questions
         if(!$prompt->run()) {

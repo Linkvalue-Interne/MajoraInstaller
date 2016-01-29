@@ -1,5 +1,5 @@
 <?php
-// dir définitions
+// dir definitions
 $srcRoot = __DIR__ . '/src';
 $buildRoot = __DIR__ . '/build';
 
