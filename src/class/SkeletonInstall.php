@@ -31,13 +31,13 @@ class SkeletonInstall
     public function run()
     {
         $this->createDirectory();
+        $i = 1;
         foreach ($this->skeletons as $skeletonName => $skeletonUrl) {
-            var_dump($skeletonUrl, filter_var($skeletonUrl, FILTER_VALIDATE_URL));
+            echo sprintf('... Download skeleton %d/%d: %s' . "\n", $i, count($this->skeletons), $skeletonUrl);
             switch (true) {
                 case filter_var($skeletonUrl, FILTER_VALIDATE_URL):
                     $zipPath = $this->addSkeletonByUrl($skeletonName, $skeletonUrl);
                     break;
-
                 default:
                     $zipPath = $this->addSkeletonByMajoraGenerator();
                     break;
@@ -47,18 +47,15 @@ class SkeletonInstall
             $zip = new ZipArchive();
             $zip->open($zipPath);
             $rootDirectory = rtrim($zip->statIndex(0)['name'], '/');
-            var_dump(is_dir(sprintf('%s/%s', $this->path, $rootDirectory)));
-            echo "\n";
-            print_r($this->path);
             if($this->fs->exists(sprintf('%s/%s', $this->path, $rootDirectory))) {
                 throw new \RuntimeException(
                     sprintf('The skeleton %s already exists in project', $rootDirectory)
                 );
             }
 
-
             $this->distill->extract($zipPath, $this->path);
             $this->fs->remove($zipPath);
+            $i++;
         }
 
         return $this;
@@ -70,15 +67,12 @@ class SkeletonInstall
     protected function addSkeletonByUrl($skeletonName, $skeletonUrl)
     {
         $downloadedFileName = pathinfo($skeletonName, PATHINFO_FILENAME);
-        $zipName = explode('/', $skeletonUrl);
-        $zipName = array_pop($zipName);
-        $extension = explode('.', $zipName);
+        $extension = explode('.', $skeletonUrl);
         $extension = array_pop($extension);
         unset($zipName);
 
 
         try {
-            echo sprintf('... Download skeleton: %s' . "\n", $skeletonUrl);
             $request = $this->client->request('GET', $skeletonUrl);
         } catch (ClientException $e) {
             throw new \RuntimeException(sprintf(
@@ -88,11 +82,7 @@ class SkeletonInstall
         }
 
         echo '... Copy skeleton to project ' . "\n";
-        // TODO: throw Exception if skeleton already exists
         $filename = $this->path . '/' . $downloadedFileName . '.' . $extension;
-
-
-
 
         try {
             $this->fs->dumpFile($filename, $request->getBody());

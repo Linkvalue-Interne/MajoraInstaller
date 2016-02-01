@@ -53,7 +53,7 @@ class Downloader
             throw new \RuntimeException(sprintf(
                 "There was an error downloading :  %s",
                 $e->getMessage()
-            ), $e);
+            ));
         }
         catch (IOException $e) {
             throw new \RuntimeException(
