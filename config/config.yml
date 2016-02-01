@@ -5,5 +5,5 @@ vagrant_template_file: Vagrantfile.twig
 vagrant_file_path: ../templates/Vagrantfile
 vagrant_file_name: Vagrantfile
 
-majora_path: https://github.com/LinkValue/majora-standard-edition/archive/v2.zip
+majora_path: https://github.com/LinkValue/majora-standard-edition/archive/master.zip
 local_zip_name: majora.zip
