@@ -14,10 +14,18 @@ class Prompt
     private $ipVagrant;
     private $skeletons = [];
 
-    private $debug;
+    /**
+     * @var bool
+     *
+     * Define if the prompt will wait for user inputs or not.
+     */
+    private $interaction;
 
-    public function __construct($debug = false) {
-        $this->debug = $debug;
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->interaction = true;
     }
 
     /**
@@ -44,7 +52,7 @@ class Prompt
      */
     private function prompt()
     {
-        if($this->debug) {
+        if(!$this->interaction) {
             return [
                 'projectName' => 'readyToCode',
                 'rootDir' => './test',
@@ -52,6 +60,7 @@ class Prompt
                 'skeletons' => ['test'],
             ];
         }
+
         if(!$name = trim(readline(self::PROMPT_PROJECT_NAME."\n"))) {
             return false;
         }
@@ -166,6 +175,25 @@ class Prompt
     public function setProjectName($projectName)
     {
         $this->projectName = $projectName;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isInteraction()
+    {
+        return !empty($this->interaction);
+    }
+
+    /**
+     * @param boolean $interaction
+     * @return $this
+     */
+    public function setInteraction($interaction)
+    {
+        $this->interaction = !empty($interaction);
 
         return $this;
     }
