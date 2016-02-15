@@ -7,3 +7,6 @@ vagrant_file_name: Vagrantfile
 
 majora_path: https://github.com/LinkValue/majora-standard-edition/archive/master.zip
 local_zip_name: majora.zip
+
+default_ansible: https://github.com/LinkValue/majora-ansible-playbook/archive/master.zip
+ansible_path: ansible

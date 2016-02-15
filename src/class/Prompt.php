@@ -10,6 +10,8 @@ class Prompt
     const PROMPT_IP_VAGRANT = 'What would be the IP address of the VM ?';
     const PROMPT_HOW_MANY_SKELETONS = 'How many skeletons will be in use ?';
     const PROMPT_SKELETONS = '- Input skeleton\'s name & URL n°%s (ex: name=>URL)';
+    const PROMPT_HOW_MANY_ROLES = 'How many Ansible Galaxy roles do you want to use?';
+    const PROMPT_ROLES = 'Input Ansible role\'s name n°%s';
 
     const ERROR_PROMPT = '/!\ You made an error in providing the required information.';
 
@@ -32,6 +34,7 @@ class Prompt
      * @var array
      */
     private $skeletons = [];
+    private $roles = [];
 
     /**
      * @var bool
@@ -89,6 +92,7 @@ class Prompt
                 'skeletons' => [
                     'basic' => 'https://github.com/stevedavid/basic-skeleton/archive/master.zip',
                 ],
+                'roles' => ['drush'],
             ];
         }
 
@@ -108,35 +112,40 @@ class Prompt
             return false;
         }
 
-        if(!$nbSkeletons = trim(readline(self::PROMPT_HOW_MANY_SKELETONS."\n"))) {
+        if(filter_var($nbSkeletons = trim(readline(self::PROMPT_HOW_MANY_SKELETONS."\n")), FILTER_VALIDATE_INT) === false) {
             return false;
         }
 
-        if(filter_var($nbSkeletons, FILTER_VALIDATE_INT) === false) {
+        if(is_null($nbSkeletons)) {
             return false;
         }
 
-        $i = 0;
         $skeletons = [];
-        while(true) {
-            ++$i;
-
+        for ($i = 0; $i < $nbSkeletons; $i++) {
             $skeleton = trim(readline(sprintf(self::PROMPT_SKELETONS, $i)."\n"));
-
             $data = explode("=>", $skeleton);
-
             $skeletons[$data[0]] = count($data) == 2 ? $data[1] : $data[0];
+        }
 
-            if($i == $nbSkeletons) {
-                break;
-            }
+        if(filter_var($nbRoles = trim(readline(self::PROMPT_HOW_MANY_ROLES . "\n")), FILTER_VALIDATE_INT) === false) {
+            return false;
+        }
+
+        if(is_null($nbRoles)) {
+            return false;
+        }
+
+        $roles = [];
+        for ($i = 0; $i < $nbRoles; $i++) {
+            $roles[] = trim(readline(sprintf(self::PROMPT_ROLES . "\n", $i)));
         }
 
         return [
-            'projectName' => $name,
-            'rootDir' => $dir,
-            'ipVagrant' => $ip,
-            'skeletons' => $skeletons,
+            'projectName'   => $name,
+            'rootDir'       => $dir,
+            'ipVagrant'     => $ip,
+            'skeletons'     => $skeletons,
+            'roles'         => $roles,
         ];
     }
 
@@ -234,4 +243,24 @@ class Prompt
 
         return $this;
     }
+
+    /*
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param $roles
+     * @return $this
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
 }

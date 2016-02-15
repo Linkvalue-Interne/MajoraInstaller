@@ -3,6 +3,7 @@ require 'Prompt.php';
 require 'VagrantFileGenerator.php';
 require 'Downloader.php';
 require 'SkeletonInstall.php';
+require 'AnsibleGalaxy.php';
 
 require_once '../vendor/symfony/process/Process.php';
 
@@ -69,9 +70,18 @@ class App
             sprintf(
                 "%s/%s",
                 $prompt->getRootDir(),
-                "skeletons"
+                "skeletons" // TODO: take this info to config.yml and pass getRootDir to run()
             )
         ))->run();
+
+        $nbTotalRoles = (new AnsibleGalaxy($prompt->getRoles()))
+            ->install($prompt->getRootDir())
+        ;
+
+        echo sprintf('... successfully added %d roles to Ansible Galaxy configuration file' . "\n", $nbTotalRoles);
+
+        echo 'PROJECT SUCCESSFULLY INITIALIZED \o/';
+
     }
 
     /**
