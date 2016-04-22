@@ -1,5 +1,8 @@
-/.idea
-/build
-/.vagrant
+# Composer
 /vendor/
-composer.phar
+
+# Build
+/build
+
+# Testing and CI tools
+/cloverage.xml
