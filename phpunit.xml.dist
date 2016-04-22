@@ -16,11 +16,7 @@
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <exclude>
-                <directory>./</directory>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
+            <directory>./src/class</directory>
         </whitelist>
     </filter>
 </phpunit>
