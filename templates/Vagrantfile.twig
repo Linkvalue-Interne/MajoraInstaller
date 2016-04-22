@@ -32,6 +32,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         local.vm.provision :ansible do |ansible|
             ansible.playbook = "ansible/app.yml"
             ansible.limit = "all"
+            ansible.extra_vars = {
+                sites: [
+                    {
+                        name: '{{ projectName }}',
+                        docroot: '{{ rootDir }}',
+                        server_name: '{{ projectName }}.dev',
+                        template: 'vhost.symfony.j2'
+                    }
+                ],
+                workspace: '{{ rootDir }}'
+            }
         end
 
     end
