@@ -1,6 +1,4 @@
 <?php
-require_once '../vendor/twig/twig/lib/Twig/Autoloader.php';
-require_once 'Config.php';
 
 /**
  * Class VagrantFileGenerator

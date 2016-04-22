@@ -1,5 +1,4 @@
 <?php
-require_once '../vendor/autoload.php';
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Dumper;

@@ -1,5 +1,4 @@
 <?php
-require_once '../vendor/symfony/yaml/Yaml.php';
 
 use Symfony\Component\Yaml\Yaml;
 

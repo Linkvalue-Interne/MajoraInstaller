@@ -1,11 +1,4 @@
 <?php
-require 'Prompt.php';
-require 'VagrantFileGenerator.php';
-require 'Downloader.php';
-require 'SkeletonInstall.php';
-require 'AnsibleGalaxy.php';
-
-require_once '../vendor/symfony/process/Process.php';
 
 use Symfony\Component\Process\Process;
 

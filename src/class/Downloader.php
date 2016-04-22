@@ -1,6 +1,4 @@
 <?php
-require_once '../vendor/autoload.php';
-require_once 'Config.php';
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
