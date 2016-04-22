@@ -1,5 +1,5 @@
 {
-    "name": "majora/majora-ready-to-code",
+    "name": "majora/installer",
     "description": "initialize an empty Symfony2 project along with an operational Vagrant virtual machine, proper AnsibleGalaxy roles and Majora skeletons.",
     "keywords": ["symfony2", "initialize"],
     "license": "MIT",
