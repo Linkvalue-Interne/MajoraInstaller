@@ -3,6 +3,10 @@
 $srcRoot = __DIR__ . '/src';
 $buildRoot = __DIR__ . '/build';
 
+if (!file_exists($buildRoot)) {
+    mkdir($buildRoot);
+}
+
 // unlink previous phar file
 if(file_exists($buildRoot . '/ready-to-code.phar')) {
     unlink($buildRoot . '/ready-to-code.phar');
