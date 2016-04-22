@@ -1,4 +1,19 @@
 {
+    "name": "majora/majora-ready-to-code",
+    "description": "initialize an empty Symfony2 project along with an operational Vagrant virtual machine, proper AnsibleGalaxy roles and Majora skeletons.",
+    "keywords": ["symfony2", "initialize"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "LinkValue partners",
+            "homepage": "https://github.com/orgs/LinkValue/people"
+        },
+        {
+            "name":     "LinkValue",
+            "email":    "contact@link-value.fr",
+            "homepage": "http://link-value.fr/"
+        }
+    ],
     "require": {
         "twig/twig": "~1.0",
         "symfony/process": "~3.0",
