@@ -16,8 +16,8 @@
     }
   ],
   "compression": "GZ",
-  "main": "bin/majora-installer",
-  "output": "majora.phar",
+  "main": "bin/majora",
+  "output": "build/majora.phar",
   "stub": true,
   "chmod": "0755"
 }
