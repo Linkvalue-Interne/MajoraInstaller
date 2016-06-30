@@ -1,0 +1,17 @@
+language: php
+
+php:
+    - 5.5
+    - 5.6
+    - 7.0
+
+install:
+    - composer install --prefer-dist --no-interaction
+
+script:
+    - vendor/bin/phpunit --coverage-clover=cloverage.xml
+    - vendor/bin/php-cs-fixer fix src --dry-run
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover cloverage.xml

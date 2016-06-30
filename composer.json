@@ -1,0 +1,23 @@
+{
+    "name": "majora/installer",
+    "description": "A tool to create Symfony projects using Majora skeletons",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "LinkValue Partners",
+            "homepage": "https://github.com/orgs/LinkValue/people"
+        },
+        {
+            "name":     "LinkValue",
+            "email":    "contact@link-value.fr",
+            "homepage": "http://link-value.fr"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^5.4",
+        "fabpot/php-cs-fixer": "^1.11"
+    },
+    "require": {}
+}
