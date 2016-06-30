@@ -1,2 +1,6 @@
 # Composer
 /vendor/
+
+# Project
+!/build/.gitkeep
+/build/
