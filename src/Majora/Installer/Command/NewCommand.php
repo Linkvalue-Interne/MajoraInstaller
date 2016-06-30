@@ -7,8 +7,10 @@ use Distill\Exception\IO\Input\FileEmptyException;
 use Distill\Exception\IO\Output\TargetDirectoryNotWritableException;
 use Distill\Strategy\MinimumSize;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
+use Majora\Installer\Download\Downloader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,12 +28,32 @@ use Symfony\Component\Process\Process;
 class NewCommand extends Command
 {
     /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
+     * @var string
+     */
+    private $destinationPath;
+
+    /**
+     * @var string
+     */
+    private $version;
+
+    /**
+     * @var Downloader
+     */
+    private $majoraDownloader;
+
+    /**
      * @inheritDoc
      */
     protected function configure()
     {
         $this->setName('new');
-        $this->addArgument('directory', InputArgument::REQUIRED, 'The directory destination');
+        $this->addArgument('destination', InputArgument::REQUIRED, 'The directory destination');
         $this->addArgument('version', InputArgument::OPTIONAL, 'The version of MajoraStandardEdition', 'master');
     }
 
@@ -41,79 +63,60 @@ class NewCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+        $this->destinationPath = $input->getArgument('destination');
+        $this->version = $input->getArgument('version');
 
-        if (file_exists($input->getArgument('directory'))) {
-            throw new \InvalidArgumentException(sprintf('The directory %s already exists', $input->getArgument('directory')));
+        if (file_exists(  $this->destinationPath)) {
+            throw new \InvalidArgumentException(sprintf('The directory %s already exists',   $this->destinationPath));
         }
 
-        $io->writeln(PHP_EOL . ' Downloading Majora Standard Edition...' . PHP_EOL);
+        $this->filesystem = new Filesystem();
 
+        $io->writeln(PHP_EOL . ' Downloading Majora Standard Edition...' . PHP_EOL);
         $distill = new Distill();
         $archiveFile = $distill
             ->getChooser()
             ->setStrategy(new MinimumSize())
-            ->addFilesWithDifferentExtensions($this->getRemoteFileUrl($input->getArgument('version')), ['zip'])
+            ->addFilesWithDifferentExtensions($this->getRemoteFileUrl($this->version), ['zip'])
             ->getPreferredFile()
         ;
+        $temporaryDownloadedFilePath = rtrim(getcwd(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'.'.uniqid(time()).'.'.pathinfo($archiveFile, PATHINFO_EXTENSION);
+        $this->majoraDownloader = new Downloader($archiveFile, $temporaryDownloadedFilePath, $output);
+        try {
+            $this->majoraDownloader->download();
+        } catch (RequestException $requestException) {
+            throw new \RuntimeException('Majora Standard Edition can not be downloaded');
+        }
+        if (!$this->majoraDownloader->isDownloaded()) {
+            //todo: soft cleanUp
+            throw new \RuntimeException('Majora Standard Edition can not be downloaded');
+        }
 
-        $downloadingProgressBar = null;
-        $httpClient = new Client();
-        $request = new Request('GET', $archiveFile);
-        $response = $httpClient->send($request, [
-            RequestOptions::PROGRESS => function($total, $current) use ($io, &$downloadingProgressBar) {
-                if ($total <= 0) {
-                    return;
-                }
-
-                if (!$downloadingProgressBar) {
-                    $downloadingProgressBar = $io->createProgressBar($total);
-                    $downloadingProgressBar->setPlaceholderFormatterDefinition('max', function (ProgressBar $bar) {
-                        return $this->formatSize($bar->getMaxSteps());
-                    });
-                    $downloadingProgressBar->setPlaceholderFormatterDefinition('current', function (ProgressBar $bar) {
-                        return str_pad($this->formatSize($bar->getProgress()), 11, ' ', STR_PAD_LEFT);
-                    });
-                }
-                $downloadingProgressBar->setProgress($current);
-            }
-        ]);
-
-        $temporaryDownloadedFilePath = rtrim(getcwd(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'.'.uniqid(time()).'-majora.'.pathinfo($archiveFile, PATHINFO_EXTENSION);
-        $filesystem = new Filesystem();
-        $filesystem->dumpFile($temporaryDownloadedFilePath, $response->getBody()->getContents());
 
         $io->writeln(PHP_EOL . PHP_EOL . ' Preparing project...' . PHP_EOL);
 
         $io->note('Extracting...');
         try {
             $distill = new Distill();
-            $extractionSucceeded = $distill->extractWithoutRootDirectory($temporaryDownloadedFilePath, $input->getArgument('directory'));
+            $extractionSucceeded = $distill->extractWithoutRootDirectory($this->majoraDownloader->getDestinationFile(), $this->destinationPath);
         } catch (FileCorruptedException $e) {
-            $io->note('Cleaning...');
-            $filesystem->remove($temporaryDownloadedFilePath);
-            $filesystem->remove($input->getArgument('directory'));
+            $this->clean(true);
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because the downloaded package is corrupted"
             ));
         } catch (FileEmptyException $e) {
-            $io->note('Cleaning...');
-            $filesystem->remove($temporaryDownloadedFilePath);
-            $filesystem->remove($input->getArgument('directory'));
+            $this->clean(true);
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because the downloaded package is empty"
             ));
         } catch (TargetDirectoryNotWritableException $e) {
-            $io->note('Cleaning...');
-            $filesystem->remove($temporaryDownloadedFilePath);
-            $filesystem->remove($input->getArgument('directory'));
+            $this->clean(true);
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because the installer doesn't have enough\n".
                 "permissions to uncompress and rename the package contents."
             ));
         } catch (\Exception $e) {
-            $io->note('Cleaning...');
-            $filesystem->remove($temporaryDownloadedFilePath);
-            $filesystem->remove($input->getArgument('directory'));
+            $this->clean(true);
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because the downloaded package is corrupted\n".
                 "or because the installer doesn't have enough permissions to uncompress and\n".
@@ -124,9 +127,7 @@ class NewCommand extends Command
         }
 
         if (!$extractionSucceeded) {
-            $io->note('Cleaning...');
-            $filesystem->remove($temporaryDownloadedFilePath);
-            $filesystem->remove($input->getArgument('directory'));
+            $this->clean(true);
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because the downloaded package is corrupted\n".
                 "or because the uncompress commands of your operating system didn't work."
@@ -152,8 +153,7 @@ class NewCommand extends Command
         }
 
         if ($composerProcess->getExitCode() != 0) {
-            $io->note('Cleaning...');
-            $filesystem->remove($temporaryDownloadedFilePath);
+            $this->clean();
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because an error occurred during the dependencies\n".
                 "installation. The destination directory has not been deleted."
@@ -161,36 +161,24 @@ class NewCommand extends Command
         }
 
         $io->note('Cleaning...');
-        $filesystem->remove($temporaryDownloadedFilePath);
+        $this->clean();
 
         /*
          * todo : prepare the project with Ansible, VagrantFile using a "Preparator" feature
          */
 
         $io->success([
-            sprintf('Majora Standard Edition %s was successfully installed', $input->getArgument('version'))
+            sprintf('Majora Standard Edition %s was successfully installed', $this->version)
         ]);
     }
 
-    /**
-     * Utility method to show the number of bytes in a readable format.
-     *
-     * @param int $bytes The number of bytes to format
-     *
-     * @return string The human readable string of bytes (e.g. 4.32MB)
-     */
-    protected function formatSize($bytes)
-    {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
-
-        $bytes = max($bytes, 0);
-        $pow = $bytes ? floor(log($bytes, 1024)) : 0;
-        $pow = min($pow, count($units) - 1);
-
-        $bytes /= pow(1024, $pow);
-
-        return number_format($bytes, 2).' '.$units[$pow];
-    }
+   protected function clean($removeDestinationPath = false)
+   {
+       $this->filesystem->remove($this->majoraDownloader->getDestinationFile());
+       if ((bool)$removeDestinationPath) {
+           $this->filesystem->remove($this->destinationPath);
+       }
+   }
 
     /**
      * Gets the remote file URL to download
