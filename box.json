@@ -1,0 +1,23 @@
+{
+  "directories": ["src/"],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        ".gitignore",
+        ".md",
+        "phpunit",
+        "Tester",
+        "Tests",
+        "tests",
+        "yaml"
+      ],
+      "in": "vendor"
+    }
+  ],
+  "compression": "GZ",
+  "main": "bin/majora-installer",
+  "output": "majora.phar",
+  "stub": true,
+  "chmod": "0755"
+}

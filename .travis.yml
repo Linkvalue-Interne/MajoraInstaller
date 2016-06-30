@@ -1,11 +1,13 @@
 language: php
 
 php:
+    - 5.5
     - 5.6
     - 7.0
 
 install:
     - composer install --prefer-dist --no-interaction
+    - php box build
 
 script:
     - vendor/bin/phpunit --coverage-clover=cloverage.xml
