@@ -5,4 +5,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = new Majora\Installer\Application();
 
+$app->addCommands([
+    new Majora\Installer\Command\NewCommand()
+]);
+
 $app->run();
