@@ -1,10 +1,11 @@
 <?php
+
 namespace Majora\Installer;
 
 use Symfony\Component\Console\Application as BaseApplication;
 
 /**
- * Class Application
+ * Class Application.
  *
  * @author LinkValue <contact@link-value.fr>
  */
@@ -14,6 +15,4 @@ class Application extends BaseApplication
     {
         parent::__construct('MajoraInstaller', '{{version}}');
     }
-    
-    
 }

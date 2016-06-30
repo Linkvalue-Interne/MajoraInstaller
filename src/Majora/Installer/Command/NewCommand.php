@@ -1,4 +1,5 @@
 <?php
+
 namespace Majora\Installer\Command;
 
 use Distill\Distill;
@@ -6,13 +7,9 @@ use Distill\Exception\IO\Input\FileCorruptedException;
 use Distill\Exception\IO\Input\FileEmptyException;
 use Distill\Exception\IO\Output\TargetDirectoryNotWritableException;
 use Distill\Strategy\MinimumSize;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\RequestOptions;
 use Majora\Installer\Download\Downloader;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,7 +18,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 /**
- * Class NewCommand
+ * Class NewCommand.
  *
  * @author LinkValue <contact@link-value.fr>
  */
@@ -48,7 +45,7 @@ class NewCommand extends Command
     private $majoraDownloader;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -58,7 +55,7 @@ class NewCommand extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -66,13 +63,13 @@ class NewCommand extends Command
         $this->destinationPath = $input->getArgument('destination');
         $this->version = $input->getArgument('version');
 
-        if (file_exists(  $this->destinationPath)) {
+        if (file_exists($this->destinationPath)) {
             throw new \InvalidArgumentException(sprintf('The directory %s already exists',   $this->destinationPath));
         }
 
         $this->filesystem = new Filesystem();
 
-        $io->writeln(PHP_EOL . ' Downloading Majora Standard Edition...' . PHP_EOL);
+        $io->writeln(PHP_EOL.' Downloading Majora Standard Edition...'.PHP_EOL);
         $distill = new Distill();
         $archiveFile = $distill
             ->getChooser()
@@ -92,8 +89,7 @@ class NewCommand extends Command
             throw new \RuntimeException('Majora Standard Edition can not be downloaded');
         }
 
-
-        $io->writeln(PHP_EOL . PHP_EOL . ' Preparing project...' . PHP_EOL);
+        $io->writeln(PHP_EOL.PHP_EOL.' Preparing project...'.PHP_EOL);
 
         $io->note('Extracting...');
         try {
@@ -113,7 +109,7 @@ class NewCommand extends Command
             $this->clean(true);
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because the installer doesn't have enough\n".
-                "permissions to uncompress and rename the package contents."
+                'permissions to uncompress and rename the package contents.'
             ));
         } catch (\Exception $e) {
             $this->clean(true);
@@ -121,7 +117,7 @@ class NewCommand extends Command
                 "Majora Standard Edition can't be installed because the downloaded package is corrupted\n".
                 "or because the installer doesn't have enough permissions to uncompress and\n".
                 "rename the package contents.\n".
-                "To solve this issue, check the permissions of the %s directory",
+                'To solve this issue, check the permissions of the %s directory',
                 getcwd()
             ), null, $e);
         }
@@ -156,7 +152,7 @@ class NewCommand extends Command
             $this->clean();
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because an error occurred during the dependencies\n".
-                "installation. The destination directory has not been deleted."
+                'installation. The destination directory has not been deleted.'
             ));
         }
 
@@ -168,22 +164,23 @@ class NewCommand extends Command
          */
 
         $io->success([
-            sprintf('Majora Standard Edition %s was successfully installed', $this->version)
+            sprintf('Majora Standard Edition %s was successfully installed', $this->version),
         ]);
     }
 
-   protected function clean($removeDestinationPath = false)
-   {
-       $this->filesystem->remove($this->majoraDownloader->getDestinationFile());
-       if ((bool)$removeDestinationPath) {
-           $this->filesystem->remove($this->destinationPath);
-       }
-   }
+    protected function clean($removeDestinationPath = false)
+    {
+        $this->filesystem->remove($this->majoraDownloader->getDestinationFile());
+        if ((bool) $removeDestinationPath) {
+            $this->filesystem->remove($this->destinationPath);
+        }
+    }
 
     /**
-     * Gets the remote file URL to download
+     * Gets the remote file URL to download.
      *
      * @param string $version The version of the file to download
+     *
      * @return string
      */
     protected function getRemoteFileUrl($version)

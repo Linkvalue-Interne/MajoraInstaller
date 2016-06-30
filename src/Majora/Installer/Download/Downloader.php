@@ -1,4 +1,5 @@
 <?php
+
 namespace Majora\Installer\Download;
 
 use GuzzleHttp\Client;
@@ -9,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Class Downloader
+ * Class Downloader.
  *
  * @author LinkValue <contact@link-value.fr>
  */
@@ -39,6 +40,7 @@ class Downloader
 
     /**
      * Constructor.
+     *
      * @param $url
      * @param $destinationFile
      * @param OutputInterface|null $output
@@ -62,7 +64,7 @@ class Downloader
         $httpClient = new Client();
         $request = new Request('GET', $this->getUrl());
         $response = $httpClient->send($request, [
-            RequestOptions::PROGRESS => function($total, $current) {
+            RequestOptions::PROGRESS => function ($total, $current) {
                 if ($total <= 0 || !$this->output) {
                     return;
                 }
@@ -77,7 +79,7 @@ class Downloader
                     });
                 }
                 $this->progressBar->setProgress($current);
-            }
+            },
         ]);
 
         $filesystem = new Filesystem();
@@ -127,7 +129,7 @@ class Downloader
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isDownloaded()
     {
