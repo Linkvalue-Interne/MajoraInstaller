@@ -24,22 +24,37 @@ You will build the binary from the source code to use in your system after cloni
 
 #### 1. Install the dependencies
 
-The project use Composer as package manager.
+The project use [Composer](https://getcomposer.org) as package manager.
 
-Execute the following command to install the packages (dev required):
+Execute the following command to download Composer binary: 
 
 ```
-$ composer install -o
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('SHA384', 'composer-setup.php') === 'e115a8dc7871f15d853148a7fbac7da27d6c0030b848d9b3dc09e2a0388afed865e6a3d6b3c0fad45c48e2b5fc1196ae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+```
+
+Then, execute the following command to install the packages (dev required):
+
+```
+$ php composer.phar install -o
 ```
 
 #### 2. Build the binary
 
-The project use Box as PHAR builder.
+The project use [Box](https://github.com/box-project/box2) as PHAR builder.
 
-Execute the following command ton build the application:
+Execute the following command to download the Box binary
 
 ```
-$ vendor/bin/box build
+$ curl -LSs https://box-project.github.io/box2/installer.php | php
+```
+
+Then, execute the following command ton build the application:
+
+```
+$ php box.phar build
 ```
 
 #### 3. Install in your system
