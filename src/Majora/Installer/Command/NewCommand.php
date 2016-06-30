@@ -176,7 +176,7 @@ class NewCommand extends Command
         );
         $composerProcess->run($outputCallback);
 
-        if ($composerProcess->getExitCode() != 0) {
+        if (intval($composerProcess->getExitCode()) != 0) {
             $this->clean();
             throw new \RuntimeException(sprintf(
                 "Majora Standard Edition can't be installed because an error occurred during the dependencies\n".
