@@ -137,7 +137,7 @@ class NewCommand extends Command
         $io->note('Installing dependencies (this operation may take a while)...');
         $composerProcess = new Process(
             '/usr/bin/env composer install -o',
-            getcwd() . DIRECTORY_SEPARATOR . $input->getArgument('directory'),
+            $this->destinationPath,
             null,
             null,
             null
