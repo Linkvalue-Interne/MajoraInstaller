@@ -12,6 +12,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class AboutCommand extends Command
 {
+    /**
+     * 
+     */
     protected function configure()
     {
         $this
@@ -20,7 +23,10 @@ class AboutCommand extends Command
         ;
     }
 
-
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
@@ -44,12 +50,9 @@ class AboutCommand extends Command
         
         
 COMMAND_HELPER;
-
-
+        
         $io->title($commandTitle);
         $io->writeln($commandHelper);
-      //  $io->title($commandHelperTitle);
-       // $io->section($commandHelperContent);
 
     }
 }
