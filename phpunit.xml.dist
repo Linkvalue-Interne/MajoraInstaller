@@ -4,19 +4,9 @@
          bootstrap="vendor/autoload.php"
          colors="true"
 >
-    <php>
-        <ini name="error_reporting" value="-1"/>
-    </php>
-
     <testsuites>
-        <testsuite name="Test Suite">
+        <testsuite name="Majora Installer">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>./src/class</directory>
-        </whitelist>
-    </filter>
 </phpunit>
