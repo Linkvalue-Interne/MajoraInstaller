@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
-
+use Majora\Installer\Generator\VagrantGenerator;
 /**
  * Class NewCommand.
  *
@@ -37,7 +37,13 @@ class NewCommand extends Command
     /**
      * @var string
      */
+    private $projectName;
+
+    /**
+     * @var string
+     */
     private $version;
+
 
     /**
      * @var Downloader
@@ -60,7 +66,7 @@ class NewCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $this->destinationPath = $input->getArgument('destination');
+        $this->destinationPath = $this->projectName = $input->getArgument('destination');
         $this->version = $input->getArgument('version');
 
         if (file_exists($this->destinationPath)) {
@@ -159,6 +165,24 @@ class NewCommand extends Command
         $io->note('Cleaning...');
         $this->clean();
 
+
+        $io->writeln(PHP_EOL.PHP_EOL.' Preparing VagrantFile...'.PHP_EOL);
+
+        $ipAddress = null;
+        while (!filter_var($ipAddress, FILTER_VALIDATE_IP))
+        {
+            $ipAddress = $io->ask('Enter an address IP');
+        }
+
+        $this->vagrantGenerator = new VagrantGenerator();
+        $io->writeln(PHP_EOL.PHP_EOL.' Customizing VagrantFile...'.PHP_EOL);
+
+        $twigEnvironement = $this->vagrantGenerator->loadEnvironment();
+        $this->vagrantGenerator->loadAndWriteTemplate($twigEnvironement, array(
+            'projectName' => $this->projectName,
+            'ip' => $ipAddress,
+            'rootDir' => $this->destinationPath,
+        ));
         /*
          * todo : prepare the project with Ansible, VagrantFile using a "Preparator" feature
          */
