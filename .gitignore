@@ -1,8 +1,0 @@
-# Composer
-/vendor/
-
-# Build
-/build
-
-# Testing and CI tools
-/cloverage.xml

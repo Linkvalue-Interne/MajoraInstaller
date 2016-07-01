@@ -1,8 +1,0 @@
-- hosts: local
-  sudo: yes
-  roles:
-    - ssh_forward
-    - common
-    - php-fpm
-  vars_files:
-    - vars.yml
