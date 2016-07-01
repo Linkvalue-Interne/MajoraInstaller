@@ -1,0 +1,18 @@
+language: php
+
+php:
+    - 5.6
+    - 7.0
+
+install:
+    - composer install --prefer-dist --no-interaction
+    - curl -LSs https://box-project.github.io/box2/installer.php | php
+
+script:
+    - vendor/bin/phpunit --coverage-clover=coverage.clover
+    - vendor/bin/php-cs-fixer fix src --dry-run
+    - php box.phar build
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
