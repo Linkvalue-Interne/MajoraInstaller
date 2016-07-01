@@ -47,6 +47,12 @@ $ php composer.phar install -o
 
 The project use [Box](https://github.com/box-project/box2) as PHAR builder.
 
+You must enable PHAR in your `php.ini` first:
+
+```
+phar.readonly = Off
+```
+
 Execute the following command to download the Box binary
 
 ```
