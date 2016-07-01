@@ -14,11 +14,11 @@ You will download a binary ready to use in your system.
 
 #### Linux / Mac OS X
 
-*todo: create a built binary downloadable*
+*create a built binary downloadable*
 
 #### Windows
 
-*todo: create a built binary downloadable*
+*create a built binary downloadable*
 
 ### Building from source
 
