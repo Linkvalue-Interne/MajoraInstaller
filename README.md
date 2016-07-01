@@ -14,11 +14,33 @@ You will download a binary ready to use in your system.
 
 #### Linux / Mac OS X
 
-*create a built binary downloadable*
+```bash
+$ sudo curl -LsS https://github.com/LinkValue/MajoraInstaller/releases/download/2.0.0/majora.phar -o /usr/local/bin/majora
+$ sudo chmod a+x /usr/local/bin/majora
+```
 
 #### Windows
 
-*create a built binary downloadable*
+```bash
+c:\> php -r "file_put_contents('majora', file_get_contents('https://github.com/LinkValue/MajoraInstaller/releases/download/2.0.0/majora.phar'));"
+```
+
+Move the downloaded `majora` file to your projects directory and execute
+it as follows:
+
+```bash
+c:\> php majora
+```
+
+If you prefer to create a global `majora` command, execute the following:
+
+```bash
+c:\> (echo @ECHO OFF & echo php "%~majora" %*) > majora.bat
+```
+
+Then, move both files (`majora` and `majora.bat`) to any location included
+in your execution path. Now you can run the `majora` command anywhere on your
+system.
 
 ### Building from source
 
