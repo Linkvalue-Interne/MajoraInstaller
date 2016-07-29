@@ -13,6 +13,6 @@ class Application extends BaseApplication
 {
     public function __construct()
     {
-        parent::__construct('MajoraInstaller', '{{version}}');
+        parent::__construct('MajoraInstaller', '@git-version@');
     }
 }
