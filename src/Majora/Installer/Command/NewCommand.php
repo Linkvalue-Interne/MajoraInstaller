@@ -62,14 +62,40 @@ class NewCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $this->destinationPath = $input->getArgument('destination');
         $this->version = $input->getArgument('version');
-
         if (file_exists($this->destinationPath)) {
             throw new \InvalidArgumentException(sprintf('The directory %s already exists',   $this->destinationPath));
         }
-
         $this->filesystem = new Filesystem();
 
         $io->writeln(PHP_EOL.' Downloading Majora Standard Edition...'.PHP_EOL);
+        $this->download($output);
+
+        $io->writeln(PHP_EOL.PHP_EOL.' Preparing project...'.PHP_EOL);
+        $io->note('Extracting...');
+        $this->extract();
+
+        $io->note('Installing dependencies (this operation may take a while)...');
+        $outputCallback = null;
+        if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERY_VERBOSE) {
+            $outputCallback = function ($type, $buffer) use ($output) {
+                $output->write($buffer);
+            };
+        }
+        $this->installComposerDependencies($outputCallback);
+
+        $io->note('Cleaning...');
+        $this->clean();
+
+        $io->success([
+            sprintf('Majora Standard Edition %s was successfully installed', $this->version),
+        ]);
+    }
+
+    /**
+     * Downloads the project archive.
+     */
+    protected function download(OutputInterface $output)
+    {
         $distill = new Distill();
         $archiveFile = $distill
             ->getChooser()
@@ -85,13 +111,16 @@ class NewCommand extends Command
             throw new \RuntimeException('Majora Standard Edition can not be downloaded');
         }
         if (!$this->majoraDownloader->isDownloaded()) {
-            //todo: soft cleanUp
+            $this->clean(true);
             throw new \RuntimeException('Majora Standard Edition can not be downloaded');
         }
+    }
 
-        $io->writeln(PHP_EOL.PHP_EOL.' Preparing project...'.PHP_EOL);
-
-        $io->note('Extracting...');
+    /**
+     * Extracts the downloaded archive.
+     */
+    protected function extract()
+    {
         try {
             $distill = new Distill();
             $extractionSucceeded = $distill->extractWithoutRootDirectory($this->majoraDownloader->getDestinationFile(), $this->destinationPath);
@@ -129,8 +158,15 @@ class NewCommand extends Command
                 "or because the uncompress commands of your operating system didn't work."
             ));
         }
+    }
 
-        $io->note('Installing dependencies (this operation may take a while)...');
+    /**
+     * Install the Composer dependencies of the downloaded project.
+     *
+     * @param callable|null $outputCallback
+     */
+    protected function installComposerDependencies(callable $outputCallback = null)
+    {
         $composerProcess = new Process(
             '/usr/bin/env composer install -o',
             $this->destinationPath,
@@ -138,15 +174,7 @@ class NewCommand extends Command
             null,
             null
         );
-        if ($output->getVerbosity() === OutputInterface::VERBOSITY_VERY_VERBOSE) {
-            $composerProcess->run(
-                function ($type, $buffer) use ($output) {
-                    $output->write($buffer);
-                }
-            );
-        } else {
-            $composerProcess->run();
-        }
+        $composerProcess->run($outputCallback);
 
         if ($composerProcess->getExitCode() != 0) {
             $this->clean();
@@ -155,22 +183,16 @@ class NewCommand extends Command
                 'installation. The destination directory has not been deleted.'
             ));
         }
-
-        $io->note('Cleaning...');
-        $this->clean();
-
-        /*
-         * todo : prepare the project with Ansible, VagrantFile using a "Preparator" feature
-         */
-
-        $io->success([
-            sprintf('Majora Standard Edition %s was successfully installed', $this->version),
-        ]);
     }
 
+    /**
+     * Clean the installer files.
+     *
+     * @param bool $removeDestinationPath
+     */
     protected function clean($removeDestinationPath = false)
     {
-        $this->filesystem->remove($this->majoraDownloader->getDestinationFile());
+        $this->majoraDownloader->deleteDestinationFile();
         if ((bool) $removeDestinationPath) {
             $this->filesystem->remove($this->destinationPath);
         }

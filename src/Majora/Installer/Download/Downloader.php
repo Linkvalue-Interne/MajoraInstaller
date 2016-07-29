@@ -36,7 +36,15 @@ class Downloader
      */
     private $downloaded = false;
 
+    /**
+     * @var ProgressBar
+     */
     private $progressBar;
+
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
 
     /**
      * Constructor.
@@ -50,6 +58,7 @@ class Downloader
         $this->url = $url;
         $this->destinationFile = $destinationFile;
         $this->output = $output;
+        $this->filesystem = new Filesystem();
     }
 
     /**
@@ -82,12 +91,19 @@ class Downloader
             },
         ]);
 
-        $filesystem = new Filesystem();
-        $filesystem->dumpFile($this->getDestinationFile(), $response->getBody()->getContents());
+        $this->filesystem->dumpFile($this->getDestinationFile(), $response->getBody()->getContents());
 
         $this->downloaded = true;
 
         return true;
+    }
+
+    /**
+     * Deletes the destination file downloaded.
+     */
+    public function deleteDestinationFile()
+    {
+        $this->filesystem->remove($this->getDestinationFile());
     }
 
     /**

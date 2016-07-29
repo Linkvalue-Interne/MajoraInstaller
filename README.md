@@ -1,5 +1,7 @@
 # MajoraInstaller
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/bb31d357-0d5b-4704-a4e0-928b95987583/mini.png)](https://insight.sensiolabs.com/projects/bb31d357-0d5b-4704-a4e0-928b95987583) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LinkValue/MajoraInstaller/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraInstaller/?branch=master) [![Build Status](https://travis-ci.org/LinkValue/MajoraInstaller.svg?branch=master)](https://travis-ci.org/LinkValue/MajoraInstaller) [![Code Coverage](https://scrutinizer-ci.com/g/LinkValue/MajoraInstaller/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraInstaller/?branch=master) [![Total Downloads](https://poser.pugx.org/majora/installer/downloads)](https://packagist.org/packages/majora/installer) [![Latest Stable Version](https://poser.pugx.org/majora/installer/v/stable)](https://packagist.org/packages/majora/installer) [![License](https://poser.pugx.org/majora/installer/license)](https://packagist.org/packages/majora/installer)
+
 A tool to create Symfony projects using Majora skeletons
 
 ## Install the installer
@@ -12,11 +14,33 @@ You will download a binary ready to use in your system.
 
 #### Linux / Mac OS X
 
-*todo: create a built binary downloadable*
+```bash
+$ sudo curl -LsS https://github.com/LinkValue/MajoraInstaller/releases/download/2.0.0/majora.phar -o /usr/local/bin/majora
+$ sudo chmod a+x /usr/local/bin/majora
+```
 
 #### Windows
 
-*todo: create a built binary downloadable*
+```bash
+c:\> php -r "file_put_contents('majora', file_get_contents('https://github.com/LinkValue/MajoraInstaller/releases/download/2.0.0/majora.phar'));"
+```
+
+Move the downloaded `majora` file to your projects directory and execute
+it as follows:
+
+```bash
+c:\> php majora
+```
+
+If you prefer to create a global `majora` command, execute the following:
+
+```bash
+c:\> (echo @ECHO OFF & echo php "%~majora" %*) > majora.bat
+```
+
+Then, move both files (`majora` and `majora.bat`) to any location included
+in your execution path. Now you can run the `majora` command anywhere on your
+system.
 
 ### Building from source
 
@@ -45,6 +69,12 @@ $ php composer.phar install -o
 
 The project use [Box](https://github.com/box-project/box2) as PHAR builder.
 
+You must enable PHAR in your `php.ini` first:
+
+```
+phar.readonly = Off
+```
+
 Execute the following command to download the Box binary
 
 ```
@@ -62,7 +92,7 @@ $ php box.phar build
 To have the `majora` command, execute the following command:
 
 ```
-# cp build/majora /usr/local/bin/majora
+# cp build/majora.phar /usr/local/bin/majora
 ```
 
 ## Using the installer
