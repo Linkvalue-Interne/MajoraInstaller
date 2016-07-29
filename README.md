@@ -92,7 +92,7 @@ $ php box.phar build
 To have the `majora` command, execute the following command:
 
 ```
-# cp build/majora /usr/local/bin/majora
+# cp build/majora.phar /usr/local/bin/majora
 ```
 
 ## Using the installer
