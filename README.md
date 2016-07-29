@@ -15,14 +15,14 @@ You will download a binary ready to use in your system.
 #### Linux / Mac OS X
 
 ```bash
-$ sudo curl -LsS https://github.com/LinkValue/MajoraInstaller/releases/download/2.0.0/majora.phar -o /usr/local/bin/majora
+$ sudo curl -LsS https://github.com/LinkValue/MajoraInstaller/releases/download/2.1.0/majora.phar -o /usr/local/bin/majora
 $ sudo chmod a+x /usr/local/bin/majora
 ```
 
 #### Windows
 
 ```bash
-c:\> php -r "file_put_contents('majora', file_get_contents('https://github.com/LinkValue/MajoraInstaller/releases/download/2.0.0/majora.phar'));"
+c:\> php -r "file_put_contents('majora', file_get_contents('https://github.com/LinkValue/MajoraInstaller/releases/download/2.1.0/majora.phar'));"
 ```
 
 Move the downloaded `majora` file to your projects directory and execute
