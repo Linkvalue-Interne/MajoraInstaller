@@ -19,5 +19,6 @@
   "main": "bin/majora",
   "output": "build/majora.phar",
   "stub": true,
-  "chmod": "0755"
+  "chmod": "0755",
+  "git-version": "git-version"
 }
