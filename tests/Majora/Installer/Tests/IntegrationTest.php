@@ -15,7 +15,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->rootDir = realpath(__DIR__ . '/../../../../');
+        $this->rootDir = sys_get_temp_dir();
         $this->fs = new Filesystem();
     }
 
@@ -29,7 +29,7 @@ class IntegrationTest extends \PHPUnit_Framework_TestCase
 
         $this->fs->remove(sprintf('%s/TestProject', $this->rootDir));
 
-        $process = new Process('php bin/majora new TestProject');
+        $process = new Process(sprintf('php %s/bin/majora new testProject', realpath(dirname(dirname(dirname(dirname(__DIR__)))))));
         $process->setWorkingDirectory($this->rootDir);
         $process->mustRun();
 

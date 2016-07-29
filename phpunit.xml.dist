@@ -4,10 +4,14 @@
          bootstrap="vendor/autoload.php"
          colors="true"
 >
-
     <testsuites>
         <testsuite name="Majora Installer">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+                <directory>./src</directory>
+        </whitelist>
+    </filter>
 </phpunit>
